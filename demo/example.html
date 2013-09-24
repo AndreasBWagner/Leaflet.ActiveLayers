@@ -1,0 +1,66 @@
+<html>
+	<head>
+		<!---<link rel="stylesheet" href="../node_modules/grunt-contrib-qunit/test/libs/qunit.css">-->
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css"/>
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css"/>
+
+		<style>
+			#map {
+				width: 100%;
+				height: 100%;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div id=map></div>
+		<!---		<script src="../node_modules/grunt-contrib-qunit/test/libs/qunit.js"></script> -->
+
+		<script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+
+		<script src="../src/ActiveLayers.js"></script>
+		<script src="../submodule/happen/happen.js"></script>
+		<script src="TestLayers.js"></script>
+		<script src="test.js"></script>
+		<script>
+			var attribution = '&copy; <a href="http://openstreetmap.org">OpenStreetMap<\/a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA<\/a>';
+
+			mapnikLayer = L.tileLayer(
+					'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+					{attribution: attribution});
+			var blackAndWhite = L.tileLayer(
+					'http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png',
+					{attribution: attribution});
+			var clouds = L.tileLayer('http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png', {
+					attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap<\/a>',
+					opacity: 0.5
+					});
+
+			map = L.map('map', {center: new L.LatLng(39.73, -104.99),
+			zoom: 10,
+			layers: [mapnikLayer, clouds]
+			});
+
+			var baseLayers = {
+					'Mapnik': mapnikLayer,
+					'Black and Whilte': blackAndWhite
+			};
+			var overlayLayers = {
+					'Clouds': clouds
+			};
+
+			var control = L.control.activeLayers(baseLayers, overlayLayers);
+			control.addTo(map);
+
+			// 'Mapnik'
+			console.log(control.getActiveBaseLayer().name);
+
+			//Clouds
+			var overlayLayers = control.getActiveOverlayLayers();
+			for (var overlayId in overlayLayers) {
+				console.log(overlayLayers[overlayId].name);
+			}
+</script>
+
+</body>
+</html>
